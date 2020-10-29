@@ -77,11 +77,12 @@ class Stage {
 
     canvas : HTMLCanvasElement = document.createElement('canvas')
     context : CanvasRenderingContext2D
-
+    renderer : Renderer 
     initCanvas() {
         this.canvas.width = w 
         this.canvas.height = h 
         this.context = this.canvas.getContext('2d')
+        this.renderer = new Renderer()
         document.body.appendChild(this.canvas)
     }
 
@@ -92,7 +93,9 @@ class Stage {
 
     handleTap() {
         this.canvas.onmousedown = () => {
-
+            this.renderer.handleTap(() => {
+                this.render()
+            })
         }
     }
 
