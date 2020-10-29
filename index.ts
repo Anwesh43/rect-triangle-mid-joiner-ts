@@ -1,6 +1,6 @@
 const w : number = window.innerWidth 
 const h : number = window.innerHeight 
-const parts : number = 4 
+const parts : number = 5
 const scGap : number = 0.02 / parts 
 const strokeFactor : number = 90 
 const rwFactor : number = 5.9
