@@ -213,3 +213,25 @@ class RectTriangleMidJoiner {
         this.curr.startUpdating(cb)
     }
 }
+
+class Renderer {
+
+    animator : Animator = new Animator()
+    rtmj : RectTriangleMidJoiner = new RectTriangleMidJoiner()
+
+    draw(context : CanvasRenderingContext2D) {
+        this.rtmj.draw(context)
+    }
+
+    handleTap(cb : Function) {
+        this.rtmj.startUpdating(() => {
+            this.animator.start(() => {
+                cb()
+                this.rtmj.update(() => {
+                    this.animator.stop()
+                    cb()
+                })
+            })
+        })
+    }
+}
