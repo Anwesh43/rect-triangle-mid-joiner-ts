@@ -28,3 +28,46 @@ class ScaleUtil {
         return Math.sin(scale * Math.PI)
     }
 }
+
+class DrawingUtil {
+
+    static drawLine(context : CanvasRenderingContext2D, x1 : number, y1 : number, x2 : number, y2 : number) {
+        context.beginPath()
+        context.moveTo(x1, y1)
+        context.lineTo(x2, y2)
+        context.stroke()
+    }
+
+    static drawRectMidJoine(context : CanvasRenderingContext2D, scale : number) {
+        const sf : number = ScaleUtil.sinify(scale)
+        const sf1 : number = ScaleUtil.divideScale(sf, 0, parts)
+        const sf2 : number = ScaleUtil.divideScale(sf, 1, parts)
+        const sf3 : number = ScaleUtil.divideScale(sf, 2, parts)
+        const rw : number = w / rwFactor 
+        const rh : number = h / hwFactor 
+        context.save()
+        context.translate(w / 2, h / 2)
+        for (var j = 0; j < 2; j++) {
+            context.save()
+            context.translate(-(rw / 2) * sf1, -(rh / 2 + j * rh) * sf2)
+            DrawingUtil.drawLine(context, 0, 0, rw * sf1, 0)
+            context.restore()
+            context.save()
+            context.translate(-rw / 2 + rw * j, -(rh / 2) * sf2)
+            DrawingUtil.drawLine(context, 0, 0, 0, rh * sf2)
+            context.restore()
+            context.save()
+            context.translate(-rh / 2 + rh * j, -rh / 2)
+            DrawingUtil.drawLine(context, 0, 0, (rh / 2) * sf3 * (1 - 2 * j), -rh * sf3)
+            context.restore()
+        }
+        context.restore()
+    }
+
+    static drawRMJNode(context : CanvasRenderingContext2D, i : number, scale : number) {
+        context.lineCap = 'round'
+        context.lineWidth = Math.min(w, h) / strokeFactor 
+        context.strokeStyle = colors[i]
+        DrawingUtil.drawRectMidJoine(context, scale)
+    }
+}
