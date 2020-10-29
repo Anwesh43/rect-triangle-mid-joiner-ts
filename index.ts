@@ -1,5 +1,3 @@
-import { timeStamp } from "console"
-
 const w : number = window.innerWidth 
 const h : number = window.innerHeight 
 const parts : number = 4 
