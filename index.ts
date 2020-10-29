@@ -3,8 +3,8 @@ const h : number = window.innerHeight
 const parts : number = 4 
 const scGap : number = 0.02 / parts 
 const strokeFactor : number = 90 
-const rwFactor : number = 8 
-const hwFactor : number = 12 
+const rwFactor : number = 5.9
+const hwFactor : number = 8.9
 const delay : number = 20 
 const backColor : string = "#BDBDBD"
 const colors : Array<string> = [
@@ -22,7 +22,7 @@ class ScaleUtil {
     }
 
     static divideScale(scale : number, i : number, n : number) : number {
-        return Math.min(1 / n, ScaleUtil.divideScale(scale, i, n)) * n 
+        return Math.min(1 / n, ScaleUtil.maxScale(scale, i, n)) * n 
     }
 
     static sinify(scale : number) : number {
@@ -33,6 +33,9 @@ class ScaleUtil {
 class DrawingUtil {
 
     static drawLine(context : CanvasRenderingContext2D, x1 : number, y1 : number, x2 : number, y2 : number) {
+        if (x1 == x2 && y1 == y2) {
+            return 
+        }
         context.beginPath()
         context.moveTo(x1, y1)
         context.lineTo(x2, y2)
@@ -44,13 +47,15 @@ class DrawingUtil {
         const sf1 : number = ScaleUtil.divideScale(sf, 0, parts)
         const sf2 : number = ScaleUtil.divideScale(sf, 1, parts)
         const sf3 : number = ScaleUtil.divideScale(sf, 2, parts)
+        const sf4 : number = ScaleUtil.divideScale(sf, 3, parts)
         const rw : number = w / rwFactor 
         const rh : number = h / hwFactor 
         context.save()
         context.translate(w / 2, h / 2)
+        context.rotate(sf4 * Math.PI / 2)
         for (var j = 0; j < 2; j++) {
             context.save()
-            context.translate(-(rw / 2) * sf1, -(rh / 2 + j * rh) * sf2)
+            context.translate(-(rw / 2) * sf1, -(rh / 2 - j * rh) * sf2)
             DrawingUtil.drawLine(context, 0, 0, rw * sf1, 0)
             context.restore()
             context.save()
@@ -58,7 +63,7 @@ class DrawingUtil {
             DrawingUtil.drawLine(context, 0, 0, 0, rh * sf2)
             context.restore()
             context.save()
-            context.translate(-rh / 2 + rh * j, -rh / 2)
+            context.translate(-rh / 2 + rh * j, rh / 2)
             DrawingUtil.drawLine(context, 0, 0, (rh / 2) * sf3 * (1 - 2 * j), -rh * sf3)
             context.restore()
         }
@@ -89,6 +94,7 @@ class Stage {
     render() {
         this.context.fillStyle = backColor 
         this.context.fillRect(0, 0, w, h)
+        this.renderer.render(this.context)
     }
 
     handleTap() {
@@ -220,7 +226,7 @@ class Renderer {
     animator : Animator = new Animator()
     rtmj : RectTriangleMidJoiner = new RectTriangleMidJoiner()
 
-    draw(context : CanvasRenderingContext2D) {
+    render(context : CanvasRenderingContext2D) {
         this.rtmj.draw(context)
     }
 
